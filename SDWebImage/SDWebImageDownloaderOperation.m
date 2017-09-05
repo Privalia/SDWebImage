@@ -225,7 +225,9 @@ typedef NSMutableDictionary<NSString *, id> SDCallbacksDictionary;
 - (void)reset {
     __weak typeof(self) weakSelf = self;
     dispatch_barrier_async(self.barrierQueue, ^{
-        [weakSelf.callbackBlocks removeAllObjects];
+        __strong typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) { return; }
+        [strongSelf.callbackBlocks removeAllObjects];
     });
     self.dataTask = nil;
     self.imageData = nil;
